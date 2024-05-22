@@ -1,8 +1,7 @@
-import {Autocomplete, Group, Burger, rem, Title} from '@mantine/core';
+import { Autocomplete, Group, Burger, rem, Title } from '@mantine/core';
 import { IconSearch } from '@tabler/icons-react';
 import railway from '@/images/railway.png';
 import classes from './MainHeader.module.css';
-
 
 const links = [
   { link: '/today', label: 'Today' },

@@ -1,11 +1,12 @@
 import React from 'react';
 import { AppShell } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Welcome } from '../components/Welcome/Welcome';
-import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
+import { Welcome } from '@/components/Welcome/Welcome';
+import { ColorSchemeToggle } from '@/components/ColorSchemeToggle/ColorSchemeToggle';
 import { EventTable } from '@/components/EventTable/EventTable';
 import { MainHeader } from '@/components/MainHeader/MainHeader';
 import { EventSideBar } from '@/components/EventSideBar';
+import {Outlet} from "react-router-dom";
 
 export function HomePage() {
   const [opened, { toggle }] = useDisclosure();
@@ -27,10 +28,7 @@ export function HomePage() {
           <EventSideBar />
       </AppShell.Navbar>
       <AppShell.Main>
-          <><Welcome /><ColorSchemeToggle />
-          <EventTable />
-          </>
-
+          <Outlet />
       </AppShell.Main>
     </AppShell>
   );
