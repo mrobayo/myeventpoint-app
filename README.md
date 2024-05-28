@@ -5,6 +5,8 @@
 
 # Webapp
   Mantine vite template
+  https://github.com/mantinedev/vite-template
+
 ```
   yarn add --dev msw
   npx msw init ./

@@ -2,41 +2,37 @@ import { useState } from 'react';
 import { DatePicker } from '@mantine/dates';
 import { SegmentedControl } from '@mantine/core';
 import {
-  IconShoppingCart,
   IconLicense,
-  IconMessage2,
   IconBellRinging,
   IconMessages,
   IconFingerprint,
   IconKey,
   IconSettings,
-  Icon2fa,
   IconUsers,
-  IconFileAnalytics,
   IconDatabaseImport,
   IconReceipt2,
-  IconReceiptRefund,
+  IconTicket,
   IconLogout,
-  IconSwitchHorizontal,
 } from '@tabler/icons-react';
 import { Link } from 'react-router-dom';
 import classes from './EventSideBar.module.css';
 
 const tabs = {
   system: [
-    // { link: '', label: 'Notificaciones', icon: IconBellRinging },
-    // { link: '', label: 'Facturación', icon: IconReceipt2 },
-    // { link: '', label: 'Securidad', icon: IconFingerprint },
-    // { link: '', label: 'SSH Keys', icon: IconKey },
-    // { link: '', label: 'Base Datos', icon: IconDatabaseImport },
-    { link: '', label: 'Usuarios', icon: Icon2fa },
-    { link: '/account', label: 'Account', icon: IconSettings },
+    { link: '/areas', label: 'Areas', icon: IconReceipt2 },
+    { link: '/services', label: 'Servicios', icon: IconFingerprint },
+    { link: '/offices', label: 'Oficinas', icon: IconBellRinging },
+    { link: '/agents', label: 'Agentes', icon: IconKey },
+    { link: '/batch', label: 'Batch', icon: IconDatabaseImport },
+    { link: '/system', label: 'Sistema', icon: IconSettings },
   ],
   events: [
-    { link: '', label: 'Eventos', icon: IconShoppingCart },
-    // { link: '', label: 'Proveedores', icon: IconLicense },
+    { link: '/agenda', label: 'Agenda', icon: IconLicense },
+    { link: '/users', label: 'Usuarios', icon: IconUsers },
+    { link: '/eventos', label: 'Eventos', icon: IconTicket },
+    { link: '/archive', label: 'Archivo', icon: IconLicense },
+    { link: '/channels', label: 'Canales', icon: IconMessages },
     // { link: '', label: 'Resultados', icon: IconMessage2 },
-    // { link: '', label: 'Messages', icon: IconMessages },
     // { link: '', label: 'Pacientes', icon: IconUsers },
     // { link: '', label: 'Reclamos', icon: IconReceiptRefund },
     // { link: '', label: 'Archivos', icon: IconFileAnalytics },
@@ -65,7 +61,6 @@ export function EventSideBar() {
 
   return (
       <nav className={classes.navbar}>
-
         <div>
           <SegmentedControl
             value={section}
@@ -78,17 +73,13 @@ export function EventSideBar() {
               ]}
           />
         </div>
-
         <div className={classes.navbarMain}><DatePicker value={value} onChange={setValue} /></div>
-
         <div className={classes.navbarMain}>{links}</div>
-
         <div className={classes.footer}>
-          <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
-            <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />
-            <span>Cambiar usuario</span>
-          </a>
-
+          {/*<a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>*/}
+          {/*  <IconSwitchHorizontal className={classes.linkIcon} stroke={1.5} />*/}
+          {/*  <span>Cambiar usuario</span>*/}
+          {/*</a>*/}
           <a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>
             <IconLogout className={classes.linkIcon} stroke={1.5} />
             <span>Salir</span>
