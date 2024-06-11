@@ -1,6 +1,5 @@
 import { http, HttpResponse } from 'msw';
-
-const mockHost = import.meta.env.VITE_MOCK_HOST;
+import { mockHost } from '@/mocks/mocks.utils';
 
 export const agendaHandlers = [
   http.get(`${mockHost}/user`, () =>
