@@ -1,16 +1,13 @@
 import { useState } from 'react';
-import { DatePicker } from '@mantine/dates';
-import { SegmentedControl } from '@mantine/core';
+// import { DatePicker } from '@mantine/dates';
+// import { SegmentedControl } from '@mantine/core';
 import {
+  IconBookmarks,
   IconLicense,
-  IconBellRinging,
+
   IconMessages,
-  IconFingerprint,
-  IconKey,
-  IconSettings,
   IconUsers,
-  IconDatabaseImport,
-  IconReceipt2,
+
   IconTicket,
   IconLogout,
 } from '@tabler/icons-react';
@@ -19,12 +16,13 @@ import classes from './EventSideBar.module.css';
 
 const tabs = {
   system: [
-    { link: '/areas', label: 'Areas', icon: IconReceipt2 },
-    { link: '/services', label: 'Servicios', icon: IconFingerprint },
-    { link: '/offices', label: 'Oficinas', icon: IconBellRinging },
-    { link: '/agents', label: 'Agentes', icon: IconKey },
-    { link: '/batch', label: 'Batch', icon: IconDatabaseImport },
-    { link: '/system', label: 'Sistema', icon: IconSettings },
+    { link: '/system/topics', label: 'Topics', icon: IconBookmarks },
+    // { link: '/areas', label: 'Areas', icon: IconReceipt2 },
+    // { link: '/services', label: 'Servicios', icon: IconFingerprint },
+    // { link: '/offices', label: 'Oficinas', icon: IconBellRinging },
+    // { link: '/agents', label: 'Agentes', icon: IconKey },
+    // { link: '/batch', label: 'Batch', icon: IconDatabaseImport },
+    // { link: '/system', label: 'Sistema', icon: IconSettings },
   ],
   events: [
     { link: '/agenda', label: 'Agenda', icon: IconLicense },
@@ -40,8 +38,8 @@ const tabs = {
 };
 
 export function EventSideBar() {
-  const [value, setValue] = useState<Date | null>(null);
-  const [section, setSection] = useState<'events' | 'system'>('events');
+  //const [value, setValue] = useState<Date | null>(null);
+  const [section] = useState<'events' | 'system'>('system');
   const [active, setActive] = useState('Billing');
 
   const links = tabs[section].map((item) => (
@@ -61,19 +59,19 @@ export function EventSideBar() {
 
   return (
       <nav className={classes.navbar}>
-        <div>
-          <SegmentedControl
-            value={section}
-            onChange={(selected: any) => setSection(selected)}
-            transitionTimingFunction="ease"
-            fullWidth
-            data={[
-                { label: 'Eventos', value: 'events' },
-                { label: 'Sistema', value: 'system' },
-              ]}
-          />
-        </div>
-        <div className={classes.navbarMain}><DatePicker value={value} onChange={setValue} /></div>
+        {/*<div>*/}
+        {/*  <SegmentedControl*/}
+        {/*    value={section}*/}
+        {/*    onChange={(selected: any) => setSection(selected)}*/}
+        {/*    transitionTimingFunction="ease"*/}
+        {/*    fullWidth*/}
+        {/*    data={[*/}
+        {/*        { label: 'Eventos', value: 'events' },*/}
+        {/*        { label: 'Sistema', value: 'system' },*/}
+        {/*      ]}*/}
+        {/*  />*/}
+        {/*</div>*/}
+        {/*<div className={classes.navbarMain}><DatePicker value={value} onChange={setValue} /></div>*/}
         <div className={classes.navbarMain}>{links}</div>
         <div className={classes.footer}>
           {/*<a href="#" className={classes.link} onClick={(event) => event.preventDefault()}>*/}

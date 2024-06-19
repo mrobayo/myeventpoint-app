@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { TopicType } from '@/types';
 import { fetchData } from '@/services/fetch-utils';
 
@@ -17,5 +17,18 @@ export function useGetTopics() {
     queryKey: ['topics'],
     queryFn: topicsService.getAll,
     refetchOnWindowFocus: false,
+  });
+}
+
+export function useCreateTopic() {
+  return useMutation({
+    mutationFn: async (topic: TopicType) => {
+      console.log('** Topic', topic);
+      //send api request here
+      await new Promise((resolve) => {
+        setTimeout(resolve, 1000);
+      }); //fake api call
+      return Promise.resolve();
+    },
   });
 }

@@ -4,9 +4,9 @@ import railway from '@/images/railway.png';
 import classes from './MainHeader.module.css';
 
 const links = [
-  { link: '/today', label: 'Today' },
-  { link: '/head-desk', label: 'Head desk' },
-  { link: '/by-speciality', label: 'By Speciality' },
+  { link: '/today', label: 'Hoy día' },
+  // { link: '/head-desk', label: 'Head desk' },
+  // { link: '/by-speciality', label: 'By Speciality' },
 ];
 export function MainHeader({ opened, toggle }: { opened: boolean, toggle: () => void }) {
   //const [opened, { toggle }] = useDisclosure(false);
