@@ -4,7 +4,7 @@ import { Button, Flex, Group, Input } from '@mantine/core';
 import { IconDownload, IconPlus, IconSearch } from '@tabler/icons-react';
 
 import { TopicsList } from './TopicsList';
-import { useGetTopics } from '@/services/topics-service';
+import { useDeleteTopic, useGetTopics } from '@/services/topics-service';
 import { TopicType } from '@/types';
 import { useDebounce } from '@/common/hooks/useDebounce';
 
@@ -14,6 +14,13 @@ export function TopicsView() {
 
   const { data } = useGetTopics();
   const debouncedSearch = useDebounce<string>(textSearch, 300);
+
+  // call DELETE hook
+  const { mutateAsync: deleteTopic, isPending: isDeletingTopic } = useDeleteTopic();
+
+  const handleDeleteTopic = (row: TopicType) => {
+    deleteTopic(row.id);
+  };
 
   useEffect(() => {
     if (!debouncedSearch) setFilteredData(data);
