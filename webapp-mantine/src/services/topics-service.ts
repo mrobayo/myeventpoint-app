@@ -1,7 +1,7 @@
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
-import { TopicType } from '@/types';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { TopicKey, TopicType } from '@/types';
 import { fetchData } from '@/services/fetch-utils';
-import {HTTP_201_CREATED} from "@/mocks/mocks.utils";
+import { HTTP_201_CREATED } from '@/mocks/mocks.utils';
 
 const topicsService = {
   getAll: async () => {
@@ -11,28 +11,49 @@ const topicsService = {
     }
     return response.json();
   },
-  // deleteTopic: async (id: TopicType['id']) => {
-  //   // send api update request here
-  //   console.log('id', id);
-  //   await new Promise((resolve) => setTimeout(resolve, 1000)); //fake api call
-  //   return Promise.resolve();
-  // },
-  async create(body: TopicType): Promise<TopicType> {
+  async delete(id: TopicKey): Promise<any> {
+    const response = await fetchData(`/topics/${id}`, { method: 'DELETE' });
+    if (!response.ok) {
+      throw new Error('Network response was not OK');
+    }
+    if (response.status >= 400) {
+      throw new Error(response);
+    }
+    return response;
+  },
+  async create(body: TopicType): Promise<any> {
     const response = await fetchData('/topics', {
-      body: JSON.stringify(body);
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      body: JSON.stringify(body),
     });
-    if (response.status !== HTTP_201_CREATED) throw new Error("error");
+    if (!response.ok) {
+      throw new Error('Network response was not OK');
+    }
+    if (response.status !== HTTP_201_CREATED) {
+      throw new Error(response);
+    }
+    return response;
   },
-
-  async update(id: string, body: TopicType): Promise<TopicType> {
-    //return await this.service.put(`/${id}`, body);
-  },
-
-  async delete(id: TopicType): Promise<string> {
-    //return await this.service.delete(`/${id}`);
-  },
-  async remove(id: any) {
-    return http.delete<any>(`/tutorials/${id}`);
+  async update(id: TopicKey, body: TopicType): Promise<any> {
+    const response = await fetchData(`/topics/${id}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      body: JSON.stringify(body),
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not OK');
+    }
+    if (response.status !== HTTP_201_CREATED) {
+      throw new Error(response);
+    }
+    return response;
   },
 };
 
@@ -47,9 +68,9 @@ export function useGetTopics() {
 export function useDeleteTopic() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: topicsService.deleteTopic,
+    mutationFn: topicsService.delete,
     //client side optimistic update
-    onMutate: (topicId: string) => {
+    onMutate: (topicId: TopicKey) => {
       queryClient.setQueryData(['users'], (prevUsers: any) =>
         prevUsers?.filter((row: TopicType) => row.id !== topicId),
       );
@@ -60,13 +81,14 @@ export function useDeleteTopic() {
 
 export function useCreateTopic() {
   return useMutation({
-    mutationFn: async (topic: TopicType) => {
-      console.log('** Topic', topic);
-      //send api request here
-      await new Promise((resolve) => {
-        setTimeout(resolve, 1000);
-      }); //fake api call
-      return Promise.resolve();
-    },
+    mutationFn: topicsService.create,
+    // mutationFn: async (topic: TopicType) => {
+    //   console.log('** Topic', topic);
+    //   //send api request here
+    //   await new Promise((resolve) => {
+    //     setTimeout(resolve, 1000);
+    //   }); //fake api call
+    //   return Promise.resolve();
+    // },
   });
 }

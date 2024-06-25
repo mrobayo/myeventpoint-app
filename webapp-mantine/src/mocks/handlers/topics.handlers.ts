@@ -1,5 +1,6 @@
 import { http, HttpResponse } from 'msw';
-import {HTTP_201_CREATED, HTTP_204_NO_CONTENT, mockHost} from '@/mocks/mocks.utils';
+import { HTTP_201_CREATED, HTTP_204_NO_CONTENT, mockHost } from '@/mocks/mocks.utils';
+import { sleep } from '@/common/utils/util-functions';
 
 const topicsData = [
   {
@@ -25,9 +26,11 @@ const topicsData = [
 ];
 
 export const topicsHandlers = [
-  http.get(`${mockHost}/topics`, () =>
-     HttpResponse.json(topicsData)
-  ),
+  http.get(`${mockHost}/topics`, async () => {
+    // TODO remove it
+    await sleep(2000);
+    return HttpResponse.json(topicsData);
+  }),
   http.post(`${mockHost}/topics`, async ({ request }) => {
     const newPost = await request.json();
     console.log('Captured a "POST " request', newPost);

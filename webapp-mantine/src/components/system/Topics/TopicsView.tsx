@@ -12,14 +12,19 @@ export function TopicsView() {
   const [textSearch, setTextSearch] = useState('');
   const [filteredData, setFilteredData] = useState<TopicType[]>();
 
-  const { data } = useGetTopics();
+  const { data, isPending: isLoading } = useGetTopics();
   const debouncedSearch = useDebounce<string>(textSearch, 300);
 
   // call DELETE hook
-  const { mutateAsync: deleteTopic, isPending: isDeletingTopic } = useDeleteTopic();
+  const { mutateAsync: deleteRow, isPending: isDeleting } = useDeleteTopic();
 
-  const handleDeleteTopic = (row: TopicType) => {
-    deleteTopic(row.id);
+  const handleDelete = async (row: TopicType) => {
+    try {
+      const response = await deleteRow(row.id);
+      console.log('** response', response);
+    } catch (error) {
+      console.log('** error', error);
+    }
   };
 
   useEffect(() => {
@@ -47,7 +52,8 @@ export function TopicsView() {
         </Group>
       </Flex>
 
-      <TopicsList data={filteredData} />
+      { isLoading && (<div />)}
+      { !isLoading && <TopicsList data={filteredData} deleteRow={handleDelete} isDeleting={isDeleting} /> }
     </>
   );
 }

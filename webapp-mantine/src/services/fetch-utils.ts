@@ -1,5 +1,7 @@
 const BASE_URL = 'http://localhost:8080';
 
-export function fetchData(url: string, options: any): Promise<any> {
-  return fetch(`${BASE_URL}${url}`);
+const buildUrlEndpoint = (endpoint: string) => `${BASE_URL}${endpoint}`;
+
+export function fetchData(url: string, options: any = {}): Promise<any> {
+  return fetch(buildUrlEndpoint(url), options);
 }

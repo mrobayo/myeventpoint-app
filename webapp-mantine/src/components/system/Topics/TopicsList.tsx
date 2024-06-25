@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { ActionIcon, Checkbox, Table } from '@mantine/core';
-import { IconEdit, IconHeart } from '@tabler/icons-react';
+import { IconEdit, IconHeart, IconX } from '@tabler/icons-react';
 
-import { TopicType } from '@/types';
+import {TopicKey, TopicType} from '@/types';
 
 const {
   Tr,
@@ -12,7 +12,7 @@ const {
   Tbody,
 } = Table;
 
-export function TopicsList({ data }: { data?: TopicType[] }) {
+export function TopicsList({ data, deleteRow, isDeleting }: { data?: TopicType[], deleteRow: (id: TopicType) => void, isDeleting: boolean }) {
   const [selectedRows, setSelectedRows] = useState(new Array<number>());
 
   const toggleRow = (id: number) => {
@@ -38,16 +38,19 @@ export function TopicsList({ data }: { data?: TopicType[] }) {
           onChange={() => toggleRow(row.id)}
         />
       </Td>
-      <Td>{row.id}</Td>
-      <Td>{row.name}</Td>
       <Td>
-        <ActionIcon aria-label="Match icon" variant="subtle" size="sm">
+        <ActionIcon aria-label="Edit" variant="subtle" size="sm">
           <IconEdit />
         </ActionIcon>
-        <ActionIcon aria-label="Match icon" variant="subtle" size="sm">
+        <ActionIcon aria-label="Like" variant="subtle" size="sm">
           <IconHeart />
         </ActionIcon>
+        <ActionIcon aria-label="Delete" variant="subtle" size="sm" color="red" onClick={() => deleteRow(row)} disabled={isDeleting}>
+          <IconX />
+        </ActionIcon>
       </Td>
+      <Td>{row.id}</Td>
+      <Td>{row.name}</Td>
     </Tr>
   ));
 
@@ -64,9 +67,9 @@ export function TopicsList({ data }: { data?: TopicType[] }) {
                 onChange={toggleAll}
               />
             </Th>
+            <Th />
             <Th>Id</Th>
             <Th>Topic</Th>
-            <Th></Th>
           </Tr>
         </Thead>
         <Tbody>{rows}</Tbody>
