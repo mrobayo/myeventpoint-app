@@ -1,31 +1,44 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { Button, Flex, Group, Input } from '@mantine/core';
+import { Button, Flex, Group, Input, Text } from '@mantine/core';
+ import { modals } from '@mantine/modals';
+
 import { IconDownload, IconPlus, IconSearch } from '@tabler/icons-react';
+import { useQueryClient } from '@tanstack/react-query';
 
-import { TopicsList } from './TopicsList';
+import { useDebounce } from '@/common/hooks/useDebounce';
 import { useDeleteTopic, useGetTopics } from '@/services/topics-service';
 import { TopicType } from '@/types';
-import { useDebounce } from '@/common/hooks/useDebounce';
+
+import { TopicsList } from './TopicsList';
 
 export function TopicsView() {
   const [textSearch, setTextSearch] = useState('');
   const [filteredData, setFilteredData] = useState<TopicType[]>();
 
+  const queryClient = useQueryClient();
   const { data, isPending: isLoading } = useGetTopics();
   const debouncedSearch = useDebounce<string>(textSearch, 300);
 
   // call DELETE hook
   const { mutateAsync: deleteRow, isPending: isDeleting } = useDeleteTopic();
 
-  const handleDelete = async (row: TopicType) => {
-    try {
-      const response = await deleteRow(row.id);
-      console.log('** response', response);
-    } catch (error) {
-      console.log('** error', error);
-    }
-  };
+  const openDeleteModal = (row: TopicType) =>
+    modals.openConfirmModal({
+      title: 'Delete?',
+      centered: true,
+      children: (
+        <Text size="sm">
+          Are you sure you want to delete? This action is destructive.
+        </Text>
+      ),
+      labels: { confirm: 'Delete', cancel: "No don't delete it" },
+      confirmProps: { color: 'red' },
+      onConfirm: async () => {
+        await deleteRow(row.id);
+        await queryClient.invalidateQueries({ queryKey: ['topics'] });
+      },
+    });
 
   useEffect(() => {
     if (!debouncedSearch) setFilteredData(data);
@@ -52,8 +65,8 @@ export function TopicsView() {
         </Group>
       </Flex>
 
-      { isLoading && (<div />)}
-      { !isLoading && <TopicsList data={filteredData} deleteRow={handleDelete} isDeleting={isDeleting} /> }
+      { isLoading && (<div>Loading</div>)}
+      { !isLoading && <TopicsList data={filteredData} deleteRow={openDeleteModal} isDeleting={isDeleting} /> }
     </>
   );
 }
