@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Button, Flex, Group, Input, Text } from '@mantine/core';
  import { modals } from '@mantine/modals';
 
-import { IconDownload, IconPlus, IconSearch } from '@tabler/icons-react';
+import { IconDownload, IconSearch } from '@tabler/icons-react';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { useDebounce } from '@/common/hooks/useDebounce';
@@ -11,6 +11,7 @@ import { useDeleteTopic, useGetTopics } from '@/services/topics-service';
 import { TopicType } from '@/types';
 
 import { TopicsList } from './TopicsList';
+import { TopicNewModal } from './TopicNewModal';
 
 export function TopicsView() {
   const [textSearch, setTextSearch] = useState('');
@@ -60,7 +61,8 @@ export function TopicsView() {
           leftSectionPointerEvents="none"
         />
         <Group justify="right">
-          <Button leftSection={<IconPlus size={14} />}>Add</Button>
+
+          <TopicNewModal />
           <Button variant="outline" rightSection={<IconDownload size={14} />}>Export</Button>
         </Group>
       </Flex>
