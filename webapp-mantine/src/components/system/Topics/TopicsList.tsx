@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { ActionIcon, Checkbox, Table } from '@mantine/core';
-import { IconEdit, IconHeart, IconX } from '@tabler/icons-react';
+import { IconEdit, IconX } from '@tabler/icons-react';
 
-import {TopicKey, TopicType} from '@/types';
+import { TopicType } from '@/types';
 
 const {
   Tr,
@@ -12,7 +12,11 @@ const {
   Tbody,
 } = Table;
 
-export function TopicsList({ data, deleteRow, isDeleting }: { data?: TopicType[], deleteRow: (id: TopicType) => void, isDeleting: boolean }) {
+type TopicsListProps = {
+  data?: TopicType[], updateRow: (row: TopicType) => void, deleteRow: (row: TopicType) => void, isDeleting: boolean,
+};
+
+export function TopicsList({ data, deleteRow, updateRow, isDeleting }: TopicsListProps) {
   const [selectedRows, setSelectedRows] = useState(new Array<number>());
 
   const toggleRow = (id: number) => {
@@ -39,12 +43,12 @@ export function TopicsList({ data, deleteRow, isDeleting }: { data?: TopicType[]
         />
       </Td>
       <Td>
-        <ActionIcon aria-label="Edit" variant="subtle" size="sm">
+        <ActionIcon aria-label="Edit" variant="subtle" size="sm" onClick={() => updateRow(row)}>
           <IconEdit />
         </ActionIcon>
-        <ActionIcon aria-label="Like" variant="subtle" size="sm">
-          <IconHeart />
-        </ActionIcon>
+        {/*<ActionIcon aria-label="Like" variant="subtle" size="sm">*/}
+        {/*  <IconHeart />*/}
+        {/*</ActionIcon>*/}
         <ActionIcon aria-label="Delete" variant="subtle" size="sm" color="red" onClick={() => deleteRow(row)} disabled={isDeleting}>
           <IconX />
         </ActionIcon>

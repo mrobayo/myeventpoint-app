@@ -68,7 +68,7 @@ export function TopicsView() {
       </Flex>
 
       { isLoading && (<div>Loading</div>)}
-      { !isLoading && <TopicsList data={filteredData} deleteRow={openDeleteModal} isDeleting={isDeleting} /> }
+      { !isLoading && <TopicsList data={filteredData} deleteRow={openDeleteModal} updateRow={openDeleteModal} isDeleting={isDeleting} /> }
     </>
   );
 }

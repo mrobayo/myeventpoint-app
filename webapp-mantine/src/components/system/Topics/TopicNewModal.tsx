@@ -1,25 +1,36 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 
-import { Modal, Button, Group, Text, TextInput } from '@mantine/core';
+import { Modal, Button, Group, Text, TextInput, Switch } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { hasLength, isEmail, useForm } from '@mantine/form';
+import { hasLength, useForm } from '@mantine/form';
 import { IconPlus } from '@tabler/icons-react';
+import { TopicType } from '@/types';
+import { useCreateTopic } from '@/services/topics-service';
 
-export const TopicNewModal = () => {
+type TopicNewModalProps = { data?: TopicType, onSaved: () => void };
+
+export const TopicNewModal = ({ data, onSaved }: TopicNewModalProps) => {
   const [opened, { close, open }] = useDisclosure(false);
   const form = useForm({
     mode: 'uncontrolled',
-    initialValues: { name: 'enter it', email: '' },
+    initialValues: { name: '', disabled: false },
     validate: {
       name: hasLength({ min: 3 }, 'Must be at least 3 characters'),
-      email: isEmail('Invalid email'),
     },
   });
+  const { mutateAsync: createNew, isPending } = useCreateTopic();
 
-  const [submittedValues, setSubmittedValues] = useState<typeof form.values | null>(null);
+  useEffect(() => {
+    if (data) {
+      console.log('set data', data);
+      form.initialize(data);
+    }
+  }, [data]);
 
-  const handleSubmit = form.onSubmit((newValues) => {
-    setSubmittedValues(newValues);
+  const handleSubmit = form.onSubmit(async (newValues) => {
+    const newObject: TopicType = { id: -1, ...newValues };
+    await createNew(newObject);
+    onSaved?.();
     close();
   });
 
@@ -29,27 +40,33 @@ export const TopicNewModal = () => {
 
         <form onSubmit={handleSubmit}>
           <TextInput
-            {...form.getInputProps('name')}
-            key={form.key('name')}
             label="Name"
+            key={form.key('name')}
             placeholder="Name"
-          />
-          <TextInput
-            {...form.getInputProps('email')}
-            key={form.key('email')}
             mt="md"
-            label="Email"
-            placeholder="Email"
+            {...form.getInputProps('name')}
           />
-
+          <Switch
+            label="Disabled"
+            key={form.key('disabled')}
+            mt="md"
+            {...form.getInputProps('disabled', { type: 'checkbox' })}
+          />
           <Group justify="right">
-            <Button type="submit" mt="md">Submit</Button>
+            <Button type="submit" mt="md" disabled={isPending}>Submit</Button>
           </Group>
 
         </form>
       </Modal>
 
-      <Button onClick={open} leftSection={<IconPlus size={14} />}>Add</Button>
+      <Button
+        onClick={() => {
+          form.reset();
+          form.initialize({ name: 'New Topic...', disabled: false } as TopicType);
+          open();
+      }}
+        leftSection={<IconPlus size={14} />}>Add
+      </Button>
     </>
   );
 };
