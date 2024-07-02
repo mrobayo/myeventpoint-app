@@ -1,11 +1,16 @@
 const http = require('http');
 const app = require('./app');
+const { loadWorldCities } = require("./models/world-cities.model");
 
 const PORT = process.env.PORT || 8000;
 const server = http.createServer(app);
 
-server.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}...`);
-})
+async function startServer() {
+  await loadWorldCities();
 
-console.log(PORT);
+  server.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}...`);
+  });
+}
+
+startServer();

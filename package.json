@@ -6,6 +6,7 @@
   "scripts": {
     "webapp": "npm run dev --prefix webapp-mantine",
     "start-server": "npm run start --prefix server-express",
+    "watch": "npm run webapp & npm run start-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
