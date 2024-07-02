@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "webapp": "npm run dev --prefix webapp-mantine",
+    "start-server": "npm run start --prefix server-express",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

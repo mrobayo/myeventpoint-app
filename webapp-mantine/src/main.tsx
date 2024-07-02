@@ -9,6 +9,14 @@ async function enableMocking() {
   return worker.start();
 }
 
-enableMocking().then(() => {
+export const isMockHostEnabled = import.meta.env.VITE_MOCK_IS_ENABLED;
+
+function startApp() {
   ReactDOM.createRoot(document.getElementById('root')!).render(<App />);
-});
+}
+
+if (isMockHostEnabled !== '0') {
+  enableMocking().then(startApp);
+} else {
+  startApp();
+}

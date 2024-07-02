@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = import.meta.env.VITE_MOCK_HOST;
 
 const buildUrlEndpoint = (endpoint: string) => `${BASE_URL}${endpoint}`;
 
