@@ -1,5 +1,5 @@
-import { Button, Group, Modal, Switch, Text, TextInput } from '@mantine/core';
 import React, { useEffect } from 'react';
+import { Button, Group, Modal, Switch, Text, TextInput } from '@mantine/core';
 import { hasLength, useForm } from '@mantine/form';
 import { TopicKey, TopicType } from '@/types';
 import { useGetTopic } from '@/services/topics-service';
@@ -26,15 +26,9 @@ export function EditTopic({ currentId, onSubmit, opened, close } : EditTopicProp
 
   useEffect(() => {
     if (!opened) return;
-    let values;
-    if (currentId && currentId > 0) {
-      values = { name: `Row ${currentId}`, disabled: true } as TopicType;
-    } else {
-      values = initialValues;
-    }
-    form.setInitialValues(values);
+    form.setInitialValues(data ?? initialValues);
     form.reset();
-  }, [currentId, opened]);
+  }, [data, opened]);
 
   const handleSubmit = form.onSubmit(onSubmit);
 
