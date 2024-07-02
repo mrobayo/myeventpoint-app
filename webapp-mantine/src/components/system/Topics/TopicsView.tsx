@@ -1,19 +1,23 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Button, Flex, Group, Input, Text } from '@mantine/core';
  import { modals } from '@mantine/modals';
 
-import { IconDownload, IconSearch } from '@tabler/icons-react';
+import { IconDownload, IconPlus, IconSearch } from '@tabler/icons-react';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { useDisclosure } from '@mantine/hooks';
 import { useDebounce } from '@/common/hooks/useDebounce';
 import { useDeleteTopic, useGetTopics } from '@/services/topics-service';
-import { TopicType } from '@/types';
+import { TopicKey, TopicType } from '@/types';
 
+import { EditTopic } from './EditTopic';
 import { TopicsList } from './TopicsList';
-import { TopicNewModal } from './TopicNewModal';
 
 export function TopicsView() {
+  const [opened, { close, open }] = useDisclosure(false);
+  const [currentId, setCurrentId] = useState<TopicKey>(null);
+
   const [textSearch, setTextSearch] = useState('');
   const [filteredData, setFilteredData] = useState<TopicType[]>();
 
@@ -41,10 +45,23 @@ export function TopicsView() {
       },
     });
 
+  const openUpdateModal = (row: TopicType) => {
+    setCurrentId(row.id);
+    open();
+  };
+
   useEffect(() => {
     if (!debouncedSearch) setFilteredData(data);
     setFilteredData(data?.filter(row => row.name.indexOf(debouncedSearch ?? '') !== -1));
   }, [data, debouncedSearch, setFilteredData]);
+
+  const onSubmit = async (newValues: Record<string, any>) => {
+    //const newObject: TopicType = { id: -1, ...newValues };
+    //await createNew(newObject);
+    console.log('newValues **', newValues);
+    //onSaved?.(); // trigger refresh
+    close();
+  };
 
   return (
     <>
@@ -61,14 +78,27 @@ export function TopicsView() {
           leftSectionPointerEvents="none"
         />
         <Group justify="right">
-
-          <TopicNewModal />
+          <Button
+            onClick={() => {
+              setCurrentId(null);
+              open();
+            }}
+            leftSection={<IconPlus size={14} />}>Add
+          </Button>
           <Button variant="outline" rightSection={<IconDownload size={14} />}>Export</Button>
         </Group>
       </Flex>
 
       { isLoading && (<div>Loading</div>)}
-      { !isLoading && <TopicsList data={filteredData} deleteRow={openDeleteModal} updateRow={openDeleteModal} isDeleting={isDeleting} /> }
+      { !isLoading && (
+        <TopicsList
+          data={filteredData}
+          deleteRow={openDeleteModal}
+          updateRow={openUpdateModal}
+          isDeleting={isDeleting}
+        />
+      )}
+      <EditTopic currentId={currentId} opened={opened} close={close} onSubmit={onSubmit} />
     </>
   );
 }

@@ -1,16 +1,16 @@
 import { Button, Group, Modal, Switch, Text, TextInput } from '@mantine/core';
 import React, { useEffect } from 'react';
 import { hasLength, useForm } from '@mantine/form';
-import { TopicType } from '@/types';
+import { TopicKey, TopicType } from '@/types';
 
 type EditTopicProps = {
   opened: boolean,
   close: () => void,
-  data?: TopicType,
+  currentId?: TopicKey,
   onSubmit: (values: Record<string, any>) => void,
 };
 
-export function EditTopic({ data, onSubmit, opened, close } : EditTopicProps) {
+export function EditTopic({ currentId, onSubmit, opened, close } : EditTopicProps) {
   const form = useForm({
     mode: 'uncontrolled',
     initialValues: { name: '', disabled: false },
@@ -20,16 +20,21 @@ export function EditTopic({ data, onSubmit, opened, close } : EditTopicProps) {
   });
 
   useEffect(() => {
-    if (data) {
-      console.log('set data', data);
-      form.initialize(data);
+    form.reset();
+    if (!opened) return;
+    if (currentId && currentId > 0) {
+      form.setValues({
+        name: `Row ${currentId}`, disabled: true,
+      });
+    } else {
+      form.setValues({ name: '', disabled: false } as TopicType);
     }
-  }, [data]);
+  }, [currentId, opened]);
 
   const handleSubmit = form.onSubmit(onSubmit);
 
   return (
-    <Modal opened={opened} onClose={close} size="md" title={<Text size="lg" fw={700}>Add Topic</Text>}>
+    <Modal opened={opened} onClose={close} size="md" title={<Text size="lg" fw={700}>Topic</Text>}>
         <form onSubmit={handleSubmit}>
           <TextInput
             label="Name"
