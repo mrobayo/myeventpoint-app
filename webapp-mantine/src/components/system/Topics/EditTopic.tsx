@@ -2,33 +2,38 @@ import { Button, Group, Modal, Switch, Text, TextInput } from '@mantine/core';
 import React, { useEffect } from 'react';
 import { hasLength, useForm } from '@mantine/form';
 import { TopicKey, TopicType } from '@/types';
+import { useGetTopic } from '@/services/topics-service';
 
 type EditTopicProps = {
   opened: boolean,
   close: () => void,
-  currentId?: TopicKey,
+  currentId: TopicKey,
   onSubmit: (values: Record<string, any>) => void,
 };
 
+const initialValues = { name: '', disabled: false } as TopicType;
+
 export function EditTopic({ currentId, onSubmit, opened, close } : EditTopicProps) {
+  const { data } = useGetTopic(currentId);
+
   const form = useForm({
     mode: 'uncontrolled',
-    initialValues: { name: '', disabled: false },
+    initialValues,
     validate: {
       name: hasLength({ min: 3 }, 'Must be at least 3 characters'),
     },
   });
 
   useEffect(() => {
-    form.reset();
     if (!opened) return;
+    let values;
     if (currentId && currentId > 0) {
-      form.setValues({
-        name: `Row ${currentId}`, disabled: true,
-      });
+      values = { name: `Row ${currentId}`, disabled: true } as TopicType;
     } else {
-      form.setValues({ name: '', disabled: false } as TopicType);
+      values = initialValues;
     }
+    form.setInitialValues(values);
+    form.reset();
   }, [currentId, opened]);
 
   const handleSubmit = form.onSubmit(onSubmit);

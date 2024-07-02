@@ -28,8 +28,13 @@ const topicsData = [
 export const topicsHandlers = [
   http.get(`${mockHost}/topics`, async () => {
     // TODO remove it
-    await sleep(2000);
+    await sleep(1000);
     return HttpResponse.json(topicsData);
+  }),
+  http.get(`${mockHost}/topics/:id`, async ({ params }) => {
+    const id = parseInt((typeof params.id === 'string') ? params.id : '', 10);
+    console.log(`Captured a "GET ${id}" request`);
+    return HttpResponse.json(topicsData.find(data => data.id === id));
   }),
   http.post(`${mockHost}/topics`, async ({ request }) => {
     const newPost = await request.json();

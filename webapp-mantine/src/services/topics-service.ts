@@ -4,6 +4,13 @@ import { fetchData } from '@/services/fetch-utils';
 import { HTTP_201_CREATED } from '@/mocks/mocks.utils';
 
 const topicsService = {
+  getById: async (id: TopicKey) => {
+    const response = await fetchData(`/topics/${id}`);
+    if (!response.ok) {
+      throw new Error('Fail retrying topic');
+    }
+    return response.json();
+  },
   getAll: async () => {
     const response = await fetchData('/topics');
     if (!response.ok) {
@@ -62,6 +69,15 @@ export function useGetTopics() {
     queryKey: ['topics'],
     queryFn: topicsService.getAll,
     refetchOnWindowFocus: false,
+  });
+}
+
+export function useGetTopic(id: TopicKey) {
+   return useQuery<TopicType, Error>({
+    queryKey: ['topics', 'byId', id],
+    queryFn: () => topicsService.getById(id),
+    staleTime: 30000,
+    enabled: !!id,
   });
 }
 
