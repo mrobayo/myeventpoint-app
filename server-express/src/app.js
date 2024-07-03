@@ -18,6 +18,11 @@ app.use(express.static(path.join(__dirname, '../../webapp-mantine/dist')))
 app.use(morgan('short'));
 app.use(topicsRouter);
 app.use(worldCitiesRouter);
-app.use(eventsRouter);
+app.use('/events', eventsRouter);
+
+// Fallback response
+app.get('/*', (request, response) => {
+  response.redirect('/');
+});
 
 module.exports = app;

@@ -1,3 +1,5 @@
+
+let latestEventId = 100;
 const events = new Map();
 
 const event = {
@@ -30,8 +32,41 @@ const event = {
   }
 };
 
-events.set(event.id, event);
+addNewEvent(event);
+
+function getEvents() {
+  return [...events.values()];
+}
+
+function getEvent(eventId) {
+  return events.get(eventId);
+}
+
+function addNewEvent(event) {
+  const eventId = latestEventId++;
+  events.set(
+    eventId,
+    Object.assign(event, {
+      id: eventId,
+      status: 'new',
+    })
+  );
+}
+
+function deleteEvent(eventId) {
+  const event = events.get(eventId);
+  event.status = 'cancelled';
+}
+
+function existsEventById(eventId) {
+  return events.has(eventId);
+}
 
 module.exports = {
   events,
+  getEvents,
+  getEvent,
+  addNewEvent,
+  deleteEvent,
+  existsEventById,
 };
