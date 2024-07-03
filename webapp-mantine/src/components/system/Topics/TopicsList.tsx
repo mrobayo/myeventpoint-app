@@ -29,17 +29,19 @@ export function TopicsList({ data, deleteRow, updateRow, isDeleting }: TopicsLis
     });
   };
 
-  const toggleAll = () =>
+  const toggleAll = () => {
+    const ids = (data || []).map(({ id }) => id) as number[];
     setSelectedRows(
-      prev => prev.length === data?.length ? [] : [...data?.map(({ id }) => id)]
+      prev => prev.length === ids.length ? [] : ids
     );
+};
 
   const rows = data?.map(row => (
     <Tr key={row.id}>
       <Td>
         <Checkbox
-          checked={selectedRows.indexOf(row.id) !== -1}
-          onChange={() => toggleRow(row.id)}
+          checked={selectedRows.indexOf(row.id || -1) !== -1}
+          onChange={() => row.id && toggleRow(row.id)}
         />
       </Td>
       <Td>
