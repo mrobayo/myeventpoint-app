@@ -21,7 +21,7 @@ function httpAddNewEvent(request, response) {
 }
 
 function httpDeleteEvent(request, response) {
-  const eventId = parseInt(request.params.id, 100);
+  const eventId = parseInt(request.params.id, 10);
   if (!existsEventById(eventId)) {
     return response.status(404).json({ error: 'Event not found' });
   }

@@ -9,8 +9,10 @@ const {
 
 const topicsRouter = express.Router();
 topicsRouter.get('/topics', httpGetAllTopics);
-topicsRouter.post('/topics', httpAddNewTopic);
 topicsRouter.get('/topics/:id', httpGetTopic);
+
+topicsRouter.post('/topics', httpAddNewTopic);
+
 topicsRouter.delete('/topics/:id', httpDeleteTopic);
 topicsRouter.put('/topics/:id', httpUpdateTopic);
 

@@ -56,7 +56,7 @@ function deleteTopic(topicId) {
 function updateTopic(topicId, topic) {
   const oldTopic = topicsMap.get(topicId);
   const { name, disabled } = topic;
-  topicsMap.set(id, Object.assign(topic, Object.assign(oldTopic, { name, disabled })));
+  topicsMap.set(topicId, Object.assign(topic, Object.assign(oldTopic, { name, disabled })));
 }
 
 module.exports = {
