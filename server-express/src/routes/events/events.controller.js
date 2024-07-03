@@ -14,7 +14,7 @@ function httpGetEvent(request, response) {
 
 function httpAddNewEvent(request, response) {
   const event = request.body;
-  event.createDate = new Date(event.createDate);
+  event.createDate = new Date();
 
   addNewEvent(event);
   return response.status(201).json(event);
