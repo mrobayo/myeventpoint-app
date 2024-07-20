@@ -4,11 +4,10 @@ import { Button, Flex, Group, Input, Text } from '@mantine/core';
  import { modals } from '@mantine/modals';
 
 import { IconDownload, IconPlus, IconSearch } from '@tabler/icons-react';
-import { useQueryClient } from '@tanstack/react-query';
 
 import { useDisclosure } from '@mantine/hooks';
 import { useDebounce } from '@/common/hooks/useDebounce';
-import { useGetTopics, useTopicQueries } from '@/services/topics-service';
+import { useTopicQueries } from '@/services/topics-service';
 import { NewTopicType, TopicKey, TopicType } from '@/types';
 
 import { EditTopic } from './EditTopic';
@@ -21,15 +20,16 @@ export function TopicsView() {
   const [textSearch, setTextSearch] = useState('');
   const [filteredData, setFilteredData] = useState<TopicType[]>();
 
-  const queryClient = useQueryClient();
-  const { data, isPending: isLoading } = useGetTopics();
   const debouncedSearch = useDebounce<string>(textSearch, 300);
 
   const {
-    saveRow,
-    updateRow,
-    deleteRow,
+    data,
+    isLoading,
+    save,
+    update,
+    remove,
     isDeleting,
+    invalidateQuery,
   } = useTopicQueries();
 
   const openDeleteModal = (row: TopicType) =>
@@ -44,8 +44,8 @@ export function TopicsView() {
       labels: { confirm: 'Delete', cancel: "No don't delete it" },
       confirmProps: { color: 'red' },
       onConfirm: async () => {
-        await deleteRow(row.id);
-        await queryClient.invalidateQueries({ queryKey: ['topics'] });
+        await remove(row.id);
+        await invalidateQuery();
       },
     });
 
@@ -60,12 +60,12 @@ export function TopicsView() {
   }, [data, debouncedSearch, setFilteredData]);
 
   const onSubmit = async (values: Record<string, any>, id?: TopicKey) => {
-    if (!id) {
-      await saveRow(values as NewTopicType);
+    if (id) {
+      await update(values as TopicType);
     } else {
-      await updateRow(values as TopicType);
+      await save(values as NewTopicType);
     }
-    await queryClient.invalidateQueries({ queryKey: ['topics'] });
+    await invalidateQuery();
     close();
   };
 
