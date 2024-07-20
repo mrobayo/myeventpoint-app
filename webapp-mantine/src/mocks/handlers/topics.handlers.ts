@@ -39,7 +39,7 @@ export const topicsHandlers = [
   http.post(`${mockHost}/topics`, async ({ request }) => {
     const newPost = await request.json();
     console.log('Captured a "POST " request', newPost);
-    return HttpResponse.json(newPost, { status: 201 });
+    return HttpResponse.json(newPost, { status: HTTP_201_CREATED });
 
     // return new HttpResponse(null, { status: HTTP_201_CREATED });
   }),

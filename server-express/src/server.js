@@ -9,7 +9,7 @@ async function startServer() {
   await loadWorldCities();
 
   server.listen(PORT, () => {
-    console.log(`Listening on port ${PORT}...`);
+    console.log(`Listening EXPRESS server on port ${PORT}...`);
   });
 }
 

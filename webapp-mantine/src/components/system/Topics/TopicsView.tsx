@@ -8,7 +8,7 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { useDisclosure } from '@mantine/hooks';
 import { useDebounce } from '@/common/hooks/useDebounce';
-import { useDeleteTopic, useGetTopics } from '@/services/topics-service';
+import {useCreateTopic, useDeleteTopic, useGetTopics} from '@/services/topics-service';
 import { TopicKey, TopicType } from '@/types';
 
 import { EditTopic } from './EditTopic';
@@ -26,6 +26,7 @@ export function TopicsView() {
   const debouncedSearch = useDebounce<string>(textSearch, 300);
 
   // call DELETE hook
+  const { mutateAsync: saveRow, isPending: isSaving} = useCreateTopic();
   const { mutateAsync: deleteRow, isPending: isDeleting } = useDeleteTopic();
 
   const openDeleteModal = (row: TopicType) =>
@@ -58,6 +59,7 @@ export function TopicsView() {
   const onSubmit = async (newValues: Record<string, any>) => {
     //const newObject: TopicType = { id: -1, ...newValues };
     //await createNew(newObject);
+    saveRow(newValues as TopicType);
     console.log('newValues **', newValues);
     //onSaved?.(); // trigger refresh
     close();

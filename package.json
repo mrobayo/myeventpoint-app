@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "webapp": "npm run dev --prefix webapp-mantine",
+    "start-webapp": "npm run dev --prefix webapp-mantine",
     "start-server": "npm run watch --prefix server-express",
-    "watch": "npm run start-server & npm run webapp",
+    "watch-server-client": "npm run start-server & npm run start-webapp",
     "deploy": "npm run build --prefix webapp-mantine && npm run start-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
