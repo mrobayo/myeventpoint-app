@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { TopicKey, TopicType } from '@/types';
+import { NewTopicType, TopicKey, TopicType } from '@/types';
 import { fetchData } from '@/services/fetch-utils';
-import { HTTP_201_CREATED } from '@/mocks/mocks.utils';
+import { HTTP_201_CREATED, HTTP_204_NO_CONTENT } from '@/mocks/mocks.utils';
 
-const topicsService = {
+export const topicsService = {
   getById: async (id: TopicKey) => {
     const response = await fetchData(`/topics/${id}`);
     if (!response.ok) {
@@ -28,7 +28,7 @@ const topicsService = {
     }
     return response;
   },
-  async create(body: TopicType): Promise<any> {
+  async create(body: NewTopicType): Promise<any> {
     const response = await fetchData('/topics', {
       method: 'POST',
       headers: {
@@ -45,19 +45,17 @@ const topicsService = {
     }
     return response;
   },
-  async update(id: TopicKey, body: TopicType): Promise<any> {
+  async update(body: TopicType): Promise<any> {
+    const { id } = body;
     const response = await fetchData(`/topics/${id}`, {
-      method: 'POST',
+      method: 'PUT',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json;charset=UTF-8',
       },
       body: JSON.stringify(body),
     });
-    if (!response.ok) {
-      throw new Error('Network response was not OK');
-    }
-    if (response.status !== HTTP_201_CREATED) {
+    if (response.status !== HTTP_204_NO_CONTENT) {
       throw new Error(response);
     }
     return response;
@@ -91,20 +89,17 @@ export function useDeleteTopic() {
         prevUsers?.filter((row: TopicType) => row.id !== topicId),
       );
     },
-    // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users'] }), //refetch users after mutation, disabled for demo
+    // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users'] }),
+    // refetch users after mutation, disabled for demo
   });
 }
 
 export function useCreateTopic() {
   return useMutation({
     mutationFn: topicsService.create,
-    // mutationFn: async (topic: TopicType) => {
-    //   console.log('** Topic', topic);
-    //   //send api request here
-    //   await new Promise((resolve) => {
-    //     setTimeout(resolve, 1000);
-    //   }); //fake api call
-    //   return Promise.resolve();
-    // },
   });
+}
+
+export function useUpdateTopic() {
+  return useMutation({ mutationFn: topicsService.update });
 }

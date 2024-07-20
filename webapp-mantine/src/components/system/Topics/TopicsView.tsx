@@ -4,12 +4,12 @@ import { Button, Flex, Group, Input, Text } from '@mantine/core';
  import { modals } from '@mantine/modals';
 
 import { IconDownload, IconPlus, IconSearch } from '@tabler/icons-react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { useDisclosure } from '@mantine/hooks';
 import { useDebounce } from '@/common/hooks/useDebounce';
-import {useCreateTopic, useDeleteTopic, useGetTopics} from '@/services/topics-service';
-import { TopicKey, TopicType } from '@/types';
+import { topicsService, useCreateTopic, useDeleteTopic, useGetTopics } from '@/services/topics-service';
+import { NewTopicType, TopicKey, TopicType } from '@/types';
 
 import { EditTopic } from './EditTopic';
 import { TopicsList } from './TopicsList';
@@ -26,7 +26,9 @@ export function TopicsView() {
   const debouncedSearch = useDebounce<string>(textSearch, 300);
 
   // call DELETE hook
-  const { mutateAsync: saveRow, isPending: isSaving} = useCreateTopic();
+  const { mutateAsync: saveRow } = useCreateTopic();
+  const { mutateAsync: updateRow } = useMutation({ mutationFn: topicsService.update });
+
   const { mutateAsync: deleteRow, isPending: isDeleting } = useDeleteTopic();
 
   const openDeleteModal = (row: TopicType) =>
@@ -56,12 +58,13 @@ export function TopicsView() {
     setFilteredData(data?.filter(row => row.name.indexOf(debouncedSearch ?? '') !== -1));
   }, [data, debouncedSearch, setFilteredData]);
 
-  const onSubmit = async (newValues: Record<string, any>) => {
-    //const newObject: TopicType = { id: -1, ...newValues };
-    //await createNew(newObject);
-    saveRow(newValues as TopicType);
-    console.log('newValues **', newValues);
-    //onSaved?.(); // trigger refresh
+  const onSubmit = async (id: TopicType, newValues: Record<string, any>) => {
+    if (!id) {
+      await saveRow(newValues as NewTopicType);
+    } else {
+      await updateRow(newValues as TopicType);
+    }
+    await queryClient.invalidateQueries({ queryKey: ['topics'] });
     close();
   };
 

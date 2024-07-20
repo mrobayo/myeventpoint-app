@@ -8,7 +8,7 @@ type EditTopicProps = {
   opened: boolean,
   close: () => void,
   currentId: TopicKey,
-  onSubmit: (values: Record<string, any>) => void,
+  onSubmit: (id: TopicKey, values: Record<string, any>) => void,
 };
 
 const initialValues = { name: '', disabled: false } as TopicType;
@@ -30,7 +30,9 @@ export function EditTopic({ currentId, onSubmit, opened, close } : EditTopicProp
     form.reset();
   }, [data, opened]);
 
-  const handleSubmit = form.onSubmit(onSubmit);
+  const handleSubmit = form.onSubmit((values) => {
+    onSubmit(currentId, values);
+  });
 
   return (
     <Modal opened={opened} onClose={close} size="md" title={<Text size="lg" fw={700}>Topic</Text>}>
