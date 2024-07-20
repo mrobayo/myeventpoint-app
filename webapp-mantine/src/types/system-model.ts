@@ -17,5 +17,4 @@ export type TopicType = Entity<number> & {
 
 export type NewTopicType = Omit<TopicType, 'id'>;
 
-//export type TopicId = infer TopicType;
 export type TopicKey = TopicType['id'];

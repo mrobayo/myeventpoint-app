@@ -34,7 +34,7 @@ export function TopicsList({ data, deleteRow, updateRow, isDeleting }: TopicsLis
     setSelectedRows(
       prev => prev.length === ids.length ? [] : ids
     );
-};
+  };
 
   const rows = data?.map(row => (
     <Tr key={row.id}>
@@ -48,7 +48,14 @@ export function TopicsList({ data, deleteRow, updateRow, isDeleting }: TopicsLis
         <ActionIcon aria-label="Edit" variant="subtle" size="sm" onClick={() => updateRow(row)}>
           <IconEdit />
         </ActionIcon>
-        <ActionIcon aria-label="Delete" variant="subtle" size="sm" color="red" onClick={() => deleteRow(row)} disabled={isDeleting}>
+        <ActionIcon
+          aria-label="Delete"
+          variant="subtle"
+          size="sm"
+          color="red"
+          onClick={() => deleteRow(row)}
+          disabled={isDeleting}
+        >
           <IconX />
         </ActionIcon>
       </Td>
@@ -77,6 +84,5 @@ export function TopicsList({ data, deleteRow, updateRow, isDeleting }: TopicsLis
         </Thead>
         <Tbody>{rows}</Tbody>
       </Table>
-
   );
 }

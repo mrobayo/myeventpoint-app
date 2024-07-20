@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
+import { useDisclosure } from '@mantine/hooks';
 import { Button, Flex, Group, Input, Text } from '@mantine/core';
- import { modals } from '@mantine/modals';
-
+import { modals } from '@mantine/modals';
 import { IconDownload, IconPlus, IconSearch } from '@tabler/icons-react';
 
-import { useDisclosure } from '@mantine/hooks';
 import { useDebounce } from '@/common/hooks/useDebounce';
 import { useTopicQueries } from '@/services/topics-service';
 import { NewTopicType, TopicKey, TopicType } from '@/types';
