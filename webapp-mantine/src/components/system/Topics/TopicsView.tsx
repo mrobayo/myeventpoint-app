@@ -4,11 +4,11 @@ import { Button, Flex, Group, Input, Text } from '@mantine/core';
  import { modals } from '@mantine/modals';
 
 import { IconDownload, IconPlus, IconSearch } from '@tabler/icons-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { useDisclosure } from '@mantine/hooks';
 import { useDebounce } from '@/common/hooks/useDebounce';
-import { topicsService, useCreateTopic, useDeleteTopic, useGetTopics } from '@/services/topics-service';
+import { useGetTopics, useTopicQueries } from '@/services/topics-service';
 import { NewTopicType, TopicKey, TopicType } from '@/types';
 
 import { EditTopic } from './EditTopic';
@@ -16,7 +16,7 @@ import { TopicsList } from './TopicsList';
 
 export function TopicsView() {
   const [opened, { close, open }] = useDisclosure(false);
-  const [currentId, setCurrentId] = useState<TopicKey>(null);
+  const [currentId, setCurrentId] = useState<TopicKey>();
 
   const [textSearch, setTextSearch] = useState('');
   const [filteredData, setFilteredData] = useState<TopicType[]>();
@@ -25,10 +25,12 @@ export function TopicsView() {
   const { data, isPending: isLoading } = useGetTopics();
   const debouncedSearch = useDebounce<string>(textSearch, 300);
 
-  // call hooks
-  const { mutateAsync: saveRow } = useCreateTopic();
-  const { mutateAsync: updateRow } = useMutation({ mutationFn: topicsService.update });
-  const { mutateAsync: deleteRow, isPending: isDeleting } = useDeleteTopic();
+  const {
+    saveRow,
+    updateRow,
+    deleteRow,
+    isDeleting,
+  } = useTopicQueries();
 
   const openDeleteModal = (row: TopicType) =>
     modals.openConfirmModal({
@@ -57,11 +59,11 @@ export function TopicsView() {
     setFilteredData(data?.filter(row => row.name.indexOf(debouncedSearch ?? '') !== -1));
   }, [data, debouncedSearch, setFilteredData]);
 
-  const onSubmit = async (id: TopicType, newValues: Record<string, any>) => {
+  const onSubmit = async (values: Record<string, any>, id?: TopicKey) => {
     if (!id) {
-      await saveRow(newValues as NewTopicType);
+      await saveRow(values as NewTopicType);
     } else {
-      await updateRow(newValues as TopicType);
+      await updateRow(values as TopicType);
     }
     await queryClient.invalidateQueries({ queryKey: ['topics'] });
     close();
@@ -84,7 +86,7 @@ export function TopicsView() {
         <Group justify="right">
           <Button
             onClick={() => {
-              setCurrentId(null);
+              setCurrentId(undefined);
               open();
             }}
             leftSection={<IconPlus size={14} />}>Add

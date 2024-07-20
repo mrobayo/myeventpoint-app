@@ -7,8 +7,8 @@ import { useGetTopic } from '@/services/topics-service';
 type EditTopicProps = {
   opened: boolean,
   close: () => void,
-  currentId: TopicKey,
-  onSubmit: (id: TopicKey, values: Record<string, any>) => void,
+  currentId?: TopicKey,
+  onSubmit: (values: Record<string, any>, id?: TopicKey) => Promise<void>,
 };
 
 const initialValues = { name: '', disabled: false } as TopicType;
@@ -30,9 +30,7 @@ export function EditTopic({ currentId, onSubmit, opened, close } : EditTopicProp
     form.reset();
   }, [data, opened]);
 
-  const handleSubmit = form.onSubmit((values) => {
-    onSubmit(currentId, values);
-  });
+  const handleSubmit = form.onSubmit((values) => onSubmit(values, currentId));
 
   return (
     <Modal opened={opened} onClose={close} size="md" title={<Text size="lg" fw={700}>Topic</Text>}>

@@ -1,10 +1,10 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { NewTopicType, TopicKey, TopicType } from '@/types';
 import { fetchData } from '@/services/fetch-utils';
 import { HTTP_201_CREATED, HTTP_204_NO_CONTENT } from '@/mocks/mocks.utils';
 
 export const topicsService = {
-  getById: async (id: TopicKey) => {
+  getById: async (id: TopicKey): Promise<TopicType> => {
     const response = await fetchData(`/topics/${id}`);
     if (!response.ok) {
       throw new Error('Fail retrying topic');
@@ -70,36 +70,42 @@ export function useGetTopics() {
   });
 }
 
-export function useGetTopic(id: TopicKey) {
+export function useGetTopic(id: TopicKey | undefined) {
    return useQuery<TopicType, Error>({
     queryKey: ['topics', 'byId', id],
-    queryFn: () => topicsService.getById(id),
+    queryFn: () => topicsService.getById(id!),
     staleTime: 30000,
     enabled: !!id,
   });
 }
 
-export function useDeleteTopic() {
-  const queryClient = useQueryClient();
-  return useMutation({
+export function useTopicQueries() {
+  const { mutateAsync: deleteRow, isPending: isDeleting } = useMutation({
     mutationFn: topicsService.delete,
-    //client side optimistic update
-    onMutate: (topicId: TopicKey) => {
-      queryClient.setQueryData(['users'], (prevUsers: any) =>
-        prevUsers?.filter((row: TopicType) => row.id !== topicId),
-      );
-    },
-    // onSettled: () => queryClient.invalidateQueries({ queryKey: ['users'] }),
-    // refetch users after mutation, disabled for demo
   });
+  const { mutateAsync: saveRow } = useMutation({ mutationFn: topicsService.create });
+  const { mutateAsync: updateRow } = useMutation({ mutationFn: topicsService.update });
+  return {
+    deleteRow,
+    isDeleting,
+    saveRow,
+    updateRow,
+  };
 }
 
-export function useCreateTopic() {
-  return useMutation({
-    mutationFn: topicsService.create,
-  });
-}
-
-export function useUpdateTopic() {
-  return useMutation({ mutationFn: topicsService.update });
-}
+// export function useDeleteTopic() {
+//   //const queryClient = useQueryClient();
+//   return useMutation({
+//     mutationFn: topicsService.delete,
+//   });
+// }
+//
+// export function useCreateTopic() {
+//   return useMutation({
+//     mutationFn: topicsService.create,
+//   });
+// }
+//
+// export function useUpdateTopic() {
+//   return useMutation({ mutationFn: topicsService.update });
+// }
