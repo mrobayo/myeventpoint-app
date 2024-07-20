@@ -25,10 +25,9 @@ export function TopicsView() {
   const { data, isPending: isLoading } = useGetTopics();
   const debouncedSearch = useDebounce<string>(textSearch, 300);
 
-  // call DELETE hook
+  // call hooks
   const { mutateAsync: saveRow } = useCreateTopic();
   const { mutateAsync: updateRow } = useMutation({ mutationFn: topicsService.update });
-
   const { mutateAsync: deleteRow, isPending: isDeleting } = useDeleteTopic();
 
   const openDeleteModal = (row: TopicType) =>
