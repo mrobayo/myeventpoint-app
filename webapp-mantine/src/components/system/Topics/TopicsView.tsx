@@ -5,6 +5,7 @@ import { Button, Flex, Group, Input, Text } from '@mantine/core';
 import { modals } from '@mantine/modals';
 import { IconDownload, IconPlus, IconSearch } from '@tabler/icons-react';
 
+import { notifications } from '@mantine/notifications';
 import { useDebounce } from '@/common/hooks/useDebounce';
 import { useTopicQueries } from '@/services/topics-service';
 import { NewTopicType, TopicKey, TopicType } from '@/types';
@@ -59,10 +60,14 @@ export function TopicsView() {
   }, [data, debouncedSearch, setFilteredData]);
 
   const onSubmit = async (values: Record<string, any>, id?: TopicKey) => {
-    if (id) {
-      await update(values as TopicType);
-    } else {
-      await save(values as NewTopicType);
+    try {
+      if (id) {
+        await update(values as TopicType);
+      } else {
+        await save(values as NewTopicType);
+      }
+    } catch (error) {
+      notifications.show({ color: 'red', message: `${error}` });
     }
     await invalidateQuery();
     close();

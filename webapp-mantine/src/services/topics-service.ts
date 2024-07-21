@@ -38,7 +38,9 @@ export const topicsService = {
       body: JSON.stringify(body),
     });
     if (!response.ok) {
-      throw new Error('Network response was not OK');
+      const { error } = await response.json();
+      console.log('** BODY = ', error);
+      throw new Error(error);
     }
     if (response.status !== HTTP_201_CREATED) {
       throw new Error(response);

@@ -1,8 +1,12 @@
 import React from 'react';
 
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
+
 import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
+import { Notifications } from '@mantine/notifications';
+
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -18,13 +22,16 @@ const reactQueryDevtools = isDevelopment ? <ReactQueryDevtools initialIsOpen={fa
 export default function App() {
   return (
     <MantineProvider theme={theme}>
-      <ModalsProvider>
-        <QueryClientProvider client={queryClient}>
-          <Router />
-          {reactQueryDevtools}
+      <MantineProvider>
+        <Notifications />
+        <ModalsProvider>
+          <QueryClientProvider client={queryClient}>
+            <Router />
+            {reactQueryDevtools}
 
-        </QueryClientProvider>
-      </ModalsProvider>
+          </QueryClientProvider>
+        </ModalsProvider>
+      </MantineProvider>
     </MantineProvider>
   );
 }

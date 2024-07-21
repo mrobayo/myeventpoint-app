@@ -38,7 +38,6 @@ function httpUpdateTopic(request, response) {
     updateTopic(id, request.body);
     return response.sendStatus(204);
   }
-
   return response.status(404).json({ error: 'Not found' });
 }
 
