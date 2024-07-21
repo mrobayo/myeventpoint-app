@@ -1,22 +1,22 @@
 import React, { useEffect } from 'react';
 import { Button, Group, Modal, Switch, Text, TextInput } from '@mantine/core';
 import { hasLength, useForm } from '@mantine/form';
-import { TopicKey, TopicType } from '@/types';
+import { NewTopicType, TopicKey } from '@/types';
 import { useGetTopic } from '@/services/topics-service';
 
 type EditTopicProps = {
   opened: boolean,
   close: () => void,
   currentId?: TopicKey,
-  onSubmit: (values: Record<string, any>, id?: TopicKey) => Promise<void>,
+  onSubmit: (values: NewTopicType, id?: TopicKey) => Promise<void>,
 };
 
-const initialValues = { name: '', disabled: false } as TopicType;
+const initialValues = { name: '', disabled: false } as NewTopicType;
 
 export function EditTopic({ currentId, onSubmit, opened, close } : EditTopicProps) {
   const { data } = useGetTopic(currentId);
 
-  const form = useForm({
+  const form = useForm<NewTopicType>({
     mode: 'uncontrolled',
     initialValues,
     validate: {

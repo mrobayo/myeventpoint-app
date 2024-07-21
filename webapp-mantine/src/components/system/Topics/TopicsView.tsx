@@ -57,17 +57,17 @@ export function TopicsView() {
     setFilteredData(data?.filter(row => row.name.indexOf(debouncedSearch ?? '') !== -1));
   }, [data, debouncedSearch, setFilteredData]);
 
-  const onSubmit = async (values: Record<string, any>, id?: TopicKey) => {
+  const onSubmit = async (values: NewTopicType, id?: TopicKey) => {
     try {
       if (id) {
-        await update(values as TopicType);
+        await update({ ...values, id });
       } else {
-        await save(values as NewTopicType);
+        await save(values);
       }
+      close();
     } catch (error) {
       notifications.show({ color: 'red', message: `${error}` });
     }
-    close();
   };
 
   return (
