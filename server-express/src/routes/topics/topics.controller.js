@@ -3,6 +3,7 @@ const {
   getTopics,
   getTopic,
   existsTopicById,
+  existsTopic,
   addNewTopic,
   deleteTopic,
   updateTopic
@@ -30,10 +31,14 @@ function httpDeleteTopic(request, response) {
 
 function httpUpdateTopic(request, response) {
   const id = parseInt(request.params.id, 10);
+  if (existsTopic(request.body, id)) {
+    return response.status(404).json({ error: 'Name is duplicated' });
+  }
   if (existsTopicById(id)) {
     updateTopic(id, request.body);
     return response.sendStatus(204);
   }
+
   return response.status(404).json({ error: 'Not found' });
 }
 
@@ -45,10 +50,12 @@ function httpAddNewTopic(request, response) {
   if (isEmpty(name) || isNil(name)) {
     return response.status(400).json({error: ' Name is required'})
   }
+  if (existsTopic(newData)) {
+    return response.status(404).json({ error: 'Name is duplicated' });
+  }
   addNewTopic(newData);
   return response.status(201).json(data);
 }
-
 
 module.exports = {
   httpGetAllTopics,

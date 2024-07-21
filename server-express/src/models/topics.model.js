@@ -49,6 +49,10 @@ function existsTopicById(topicId) {
   return topicsMap.has(topicId);
 }
 
+function existsTopic(topic, currentId) {
+  return [...topicsMap.values()].some(({ id, name }) => name === topic.name && id !== currentId);
+}
+
 function deleteTopic(topicId) {
   topicsMap.delete(topicId);
 }
@@ -63,6 +67,7 @@ module.exports = {
   getTopics,
   getTopic,
   existsTopicById,
+  existsTopic,
   addNewTopic,
   deleteTopic,
   updateTopic,
