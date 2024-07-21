@@ -7,7 +7,7 @@ function httpGetEvents(request, response) {
 function httpGetEvent(request, response) {
   const eventId = parseInt(request.params.id, 10);
   if (!existsEventById(eventId)) {
-    return response.status(404).json({ error: `Event not found` });
+    return response.status(404).json({ message: `Event not found` });
   }
   return response.status(200).json(getEvent(eventId));
 }
@@ -23,7 +23,7 @@ function httpAddNewEvent(request, response) {
 function httpDeleteEvent(request, response) {
   const eventId = parseInt(request.params.id, 10);
   if (!existsEventById(eventId)) {
-    return response.status(404).json({ error: 'Event not found' });
+    return response.status(404).json({ message: 'Event not found' });
   }
   deleteEvent(eventId);
   return response.status(204);

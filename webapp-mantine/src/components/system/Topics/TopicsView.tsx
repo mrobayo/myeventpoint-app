@@ -29,7 +29,6 @@ export function TopicsView() {
     update,
     remove,
     isDeleting,
-    invalidateQuery,
   } = useTopicQueries();
 
   const openDeleteModal = (row: TopicType) =>
@@ -45,7 +44,6 @@ export function TopicsView() {
       confirmProps: { color: 'red' },
       onConfirm: async () => {
         await remove(row.id);
-        await invalidateQuery();
       },
     });
 
@@ -69,7 +67,6 @@ export function TopicsView() {
     } catch (error) {
       notifications.show({ color: 'red', message: `${error}` });
     }
-    await invalidateQuery();
     close();
   };
 

@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { NewTopicType, TopicKey, TopicType } from '@/types';
 import { fetchData } from '@/services/fetch-utils';
-import { HTTP_201_CREATED, HTTP_204_NO_CONTENT } from '@/mocks/mocks.utils';
 
 export const topicsService = {
   getById: async (id: TopicKey): Promise<TopicType> => {
@@ -9,14 +8,14 @@ export const topicsService = {
     if (!response.ok) {
       throw new Error('Fail retrying topic');
     }
-    return response.json();
+    return response.json() as TopicType;
   },
   getAll: async () => {
     const response = await fetchData('/topics');
     if (!response.ok) {
       throw new Error('Fail retrying topics');
     }
-    return response.json();
+    return response.json() as TopicType[];
   },
   async delete(id: TopicKey): Promise<any> {
     const response = await fetchData(`/topics/${id}`, { method: 'DELETE' });
@@ -38,12 +37,8 @@ export const topicsService = {
       body: JSON.stringify(body),
     });
     if (!response.ok) {
-      const { error } = await response.json();
-      console.log('** BODY = ', error);
-      throw new Error(error);
-    }
-    if (response.status !== HTTP_201_CREATED) {
-      throw new Error(response);
+      const { message } = await response.json();
+      throw new Error(message);
     }
     return response;
   },
@@ -57,8 +52,9 @@ export const topicsService = {
       },
       body: JSON.stringify(body),
     });
-    if (response.status !== HTTP_204_NO_CONTENT) {
-      throw new Error(response);
+    if (!response.ok) {
+      const { message } = await response.json();
+      throw new Error(message);
     }
     return response;
   },
@@ -85,9 +81,16 @@ export function useTopicQueries() {
 
   const { mutateAsync: remove, isPending: isDeleting } = useMutation({
     mutationFn: topicsService.delete,
+    onSuccess: invalidateQuery,
   });
-  const { mutateAsync: save } = useMutation({ mutationFn: topicsService.create });
-  const { mutateAsync: update } = useMutation({ mutationFn: topicsService.update });
+  const { mutateAsync: save } = useMutation({
+    mutationFn: topicsService.create,
+    onSuccess: invalidateQuery,
+  });
+  const { mutateAsync: update } = useMutation({
+    mutationFn: topicsService.update,
+    onSuccess: invalidateQuery,
+  });
 
   return {
     data,

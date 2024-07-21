@@ -18,7 +18,7 @@ function httpGetTopic(request, response) {
   if (existsTopicById(id)) {
     return response.status(200).json(getTopic(id));
   }
-  return response.status(404).json({ error: `Not found` });
+  return response.status(404).json({ message: `Not found` });
 }
 
 function httpDeleteTopic(request, response) {
@@ -32,13 +32,13 @@ function httpDeleteTopic(request, response) {
 function httpUpdateTopic(request, response) {
   const id = parseInt(request.params.id, 10);
   if (existsTopic(request.body, id)) {
-    return response.status(404).json({ error: 'Name is duplicated' });
+    return response.status(404).json({ message: 'Name is duplicated' });
   }
   if (existsTopicById(id)) {
     updateTopic(id, request.body);
     return response.sendStatus(204);
   }
-  return response.status(404).json({ error: 'Not found' });
+  return response.status(404).json({ message: 'Not found' });
 }
 
 function httpAddNewTopic(request, response) {
@@ -47,10 +47,10 @@ function httpAddNewTopic(request, response) {
 
   const { name } = newData;
   if (isEmpty(name) || isNil(name)) {
-    return response.status(400).json({error: ' Name is required'})
+    return response.status(400).json({ message: ' Name is required' })
   }
   if (existsTopic(newData)) {
-    return response.status(404).json({ error: 'Name is duplicated' });
+    return response.status(404).json({ message: 'Name is duplicated' });
   }
   addNewTopic(newData);
   return response.status(201).json(data);
