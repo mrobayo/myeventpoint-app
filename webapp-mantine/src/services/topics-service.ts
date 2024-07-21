@@ -3,7 +3,7 @@ import { NewTopicType, TopicKey, TopicType } from '@/types';
 import { fetchData } from '@/services/fetch-utils';
 
 export const topicsService = {
-  getById: async (id: TopicKey): Promise<TopicType> => {
+  getById: async (id: TopicKey) => {
     const response = await fetchData(`/topics/${id}`);
     if (!response.ok) {
       throw new Error('Fail retrying topic');
@@ -17,7 +17,7 @@ export const topicsService = {
     }
     return response.json() as TopicType[];
   },
-  async delete(id: TopicKey): Promise<any> {
+  async delete(id: TopicKey) {
     const response = await fetchData(`/topics/${id}`, { method: 'DELETE' });
     if (!response.ok) {
       throw new Error('Network response was not OK');
@@ -25,9 +25,8 @@ export const topicsService = {
     if (response.status >= 400) {
       throw new Error(response);
     }
-    return response;
   },
-  async create(body: NewTopicType): Promise<any> {
+  async create(body: NewTopicType) {
     const response = await fetchData('/topics', {
       method: 'POST',
       headers: {
@@ -40,9 +39,8 @@ export const topicsService = {
       const { message } = await response.json();
       throw new Error(message);
     }
-    return response;
   },
-  async update(body: TopicType): Promise<any> {
+  async update(body: TopicType) {
     const { id } = body;
     const response = await fetchData(`/topics/${id}`, {
       method: 'PUT',
@@ -56,7 +54,6 @@ export const topicsService = {
       const { message } = await response.json();
       throw new Error(message);
     }
-    return response;
   },
 };
 
